@@ -1,1 +1,1 @@
-# wrangle_osm_pittsburgh
+# wrangle-osm-pittsburgh
