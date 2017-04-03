@@ -302,6 +302,14 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
                         if(i < len(tokens)-1):
                             key += ':'
 
+                if key == 'city':
+                    value = fix_city(value)
+
+                if key == 'postcode':
+                    value = fix_zip(value)
+                    if not value:
+                        continue
+
                 tag = {'id': element.attrib['id'], 'key': key, 'value': value, 'type': t}
 
                 tags.append(tag)
