@@ -173,6 +173,31 @@ WAY_TAGS_PATH = "ways_tags.csv"
 
 LOWER_COLON = re.compile(r'^([a-z]|_)+:([a-z]|_)+')
 PROBLEMCHARS = re.compile(r'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')
+ZIP_FULL = re.compile(r'^\d{5}$')
+ZIP = re.compile(r'\d{5}')
+
+CITY_NAME_MAPPING = {
+    '1936 5th Ave. Pittsburgh, PA 15219': 'Pittsburgh',
+    'Allison Park, PA': 'Allison Park',
+    'Bradfordwoods': 'Bradford Woods',
+    'Butler, PA': 'Butler',
+    'Cranberry': 'Cranberry Township',
+    'Cranberry Twp': 'Cranberry Township',
+    'Evans City, PA': 'Evans City',
+    'Leetsdale ': 'Leetsdale',
+    'McKees rocks': 'McKees Rocks',
+    'Mckees Rocks': 'McKees Rocks',
+    'Moon': 'Moon Township',
+    'Moon Townshop': 'Moon Township',
+    'Mt. Washington': 'Mount Washington',
+    'Pittburgh': 'Pittsburgh',
+    'Pittsburg': 'Pittsburgh',
+    'Pittsburgh, PA': 'Pittsburgh',
+    'Renfrew, PA': 'Renfrew',
+    'Renfrew,PA': 'Renfrew',
+    'Renfrew,pa': 'Renfrew',
+    'South Park Township': 'South Park'
+}
 
 SCHEMA = schema.schema
 
@@ -182,6 +207,21 @@ NODE_TAGS_FIELDS = ['id', 'key', 'value', 'type']
 WAY_FIELDS = ['id', 'user', 'uid', 'version', 'changeset', 'timestamp']
 WAY_TAGS_FIELDS = ['id', 'key', 'value', 'type']
 WAY_NODES_FIELDS = ['id', 'node_id', 'position']
+
+def fix_city(value, city_name_mapping=CITY_NAME_MAPPING):
+    if value in city_name_mapping:
+        return city_name_mapping[value]
+
+    return value
+
+def fix_zip(value, zip_full_regex=ZIP_FULL, zip_regex=ZIP):
+
+    if zip_full_regex.match(value):
+        return value
+    elif zip_regex.search(value):
+        return zip_regex.search(value).group(0)
+    else:
+        return False
 
 
 def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIELDS,
@@ -217,6 +257,15 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
                         key += tokens[i]
                         if(i < len(tokens)-1):
                             key += ':'
+
+                if key == 'city':
+                    value = fix_city(value)
+                    print value
+
+                if key == 'postcode':
+                    value = fix_zip(value)
+                    if not value:
+                        continue
 
                 tag = {'id': element.attrib['id'], 'key': key, 'value': value, 'type': t}
 
