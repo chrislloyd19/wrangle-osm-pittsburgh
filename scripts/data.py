@@ -163,7 +163,8 @@ import xml.etree.cElementTree as ET
 import cerberus
 import schema
 
-OSM_PATH = "../pittsburgh.osm"
+#OSM_PATH = "../pittsburgh.osm"
+OSM_PATH = "../ex_JJ1igoeA8K3YfUHPuiifFYRg8LHik.osm"
 
 NODES_PATH = "nodes.csv"
 NODE_TAGS_PATH = "nodes_tags.csv"
@@ -260,7 +261,6 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
 
                 if key == 'city':
                     value = fix_city(value)
-                    print value
 
                 if key == 'postcode':
                     value = fix_zip(value)
